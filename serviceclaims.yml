@@ -1,0 +1,30 @@
+apiVersion: services.tanzu.vmware.com/v1alpha1
+kind: ResourceClaim
+metadata:
+  name: tanzu-java-web-app-database
+  labels:
+    app.kubernetes.io/component: run
+    carto.run/workload-name: tanzu-java-web-app
+spec:
+  ref:
+    apiVersion: rabbitmq.com/v1beta1
+    kind: RabbitmqCluster
+    name: my-broker
+---
+apiVersion: servicebinding.io/v1alpha3
+kind: ServiceBinding
+metadata:
+  name: tanzu-java-web-app-database
+  labels:
+    app.kubernetes.io/component: run
+    carto.run/workload-name: tanzu-java-web-app
+spec:
+  name: database
+  service:
+    apiVersion: services.tanzu.vmware.com/v1alpha1
+    kind: ResourceClaim
+    name: tanzu-java-web-app-database
+  workload:
+    apiVersion: serving.knative.dev/v1
+    kind: Service
+    name: tanzu-java-web-app
